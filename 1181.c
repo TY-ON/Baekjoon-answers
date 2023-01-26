@@ -2,8 +2,8 @@
 #include<string.h>
 #include<stdbool.h>
 
-void my_sort(char (*c)[51], int n, int *len, int *order);
-bool my_compare(char (*c)[51], int n, int *len, int *order, int i, int j);
+int insertion(char (*c)[51], int *order, int n, int index);
+int compare_str(char *a, char*b);
 
 int main(){
     int n = 0;
@@ -17,41 +17,71 @@ int main(){
         scanf("%s", c[i]);
         len[i] = strlen(c[i]);
         order[i] = i;
-    }
-    order[n] = n;
-    c[n][0] = '\0';
 
-    my_sort(c, n, len, order);
-    
+        if(insertion(c, order, i+1, i)==-1){
+            if(i==0) continue;
+            n--;
+            i--;
+        }
+    }
+
     for(int i=0;i<n;i++){
-        if(strcmp(c[order[i]], c[order[i+1]])==0) continue;
         printf("%s\n", c[order[i]]);
     }
 
     return 0;
 }
 
-void my_sort(char (*c)[51], int n, int *len, int *order){
-    int temp = 0;
-    for(int i=0;i<n;i++){
-        for(int j=i+1;j<n;j++){
-            if(my_compare(c, n, len, order, i, j)){
-                temp = order[i];
-                order[i] = order[j];
-                order[j] = temp;
-            }
+int insertion(char (*c)[51], int *order, int n, int index){
+    int temp = 0, s = 0, e = index, move = 0;
+
+    while(s!=e){
+        move = compare_str(c[order[(s+e)/2]], c[order[index]]);
+        if (move>0)//move to right side
+        {
+            s = (s+e)/2 + 1;
+            continue;
+        }
+        if (move<0)//move to left side
+        {
+            e = (s+e)/2;
+            continue;
+        }
+        if(move==0){
+            if(s==index) return 0;
+            return -1;
         }
     }
+    move = compare_str(c[order[s]], c[order[index]]);
+    if(move == 0){
+        if(s==index){
+            return 0;
+        }
+        return -1;
+    }
+    //if (move<0)//move to s
+    if (move>0)//move to s+1
+    {
+        s++;
+    }
+
+    temp = order[index];
+    for(int i=index;i>s;i--){
+        order[i] = order[i-1];
+    }
+    order[s] = temp;
+    return 0;
 }
 
-bool my_compare(char (*c)[51], int n, int *len, int *order, int i, int j){
-    //if i is larger, return true
-    if(len[order[i]]>len[order[j]]) return true;
-    if(len[order[i]]<len[order[j]]) return false;
+int compare_str(char *a, char*b){
+    int alen = strlen(a);
+    int blen = strlen(b);
+    if(alen<blen) return 1;
+    if(alen>blen) return -1;
 
-    for(int l=0;l<len[order[i]];l++){
-        if(c[order[i]][l]>c[order[j]][l]) return true;
-        if(c[order[i]][l]<c[order[j]][l]) return false;
+    for(int i=0;i<alen;i++){
+        if(a[i]<b[i]) return 1;
+        if(a[i]>b[i]) return -1;
     }
-    return false;
+    return 0;
 }
