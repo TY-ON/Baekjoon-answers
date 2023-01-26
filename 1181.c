@@ -2,10 +2,11 @@
 #include <stdlib.h>
 #include <string.h>
 
-void make2dArray(char** pointer, int rows, int columns);
+char** make2dArray(int rows, int columns);
 int compareLength(char* original, char* comparison);
 int comparePriority(char* original, char* comparison);
 void changeIndex(char* a, char* b);
+void freeArray(char** address);
 
 int main() {
 
@@ -13,30 +14,49 @@ int main() {
     char** words = NULL;
     char* temp = NULL;
 
-    make2dArray(words, N, 51);
+    scanf("%d", &N);
+    words = make2dArray(N, 51);
     scanf("%s",words[0]);
     for (int i = 1; i < N; i++)
     {
         scanf("%s",words[i]);
         for (int j = i; j >= 1; j--)
-        if(comparePriority(words[j], words[j-1]) == 0)
         {
-            changeIndex(words[j], words[j-1]);
+            if(comparePriority(words[j], words[j-1]) == 0)
+            {
+                changeIndex(words[j], words[j-1]);
+            }
+            else
+            {
+                break;
+            }
         }
-        else if(comparePriority(words[j], words[j-1]) == 1)
-        {
-        }
-
     }
+
+    printf("%s", words[0]);
+    for (int i = 1; i < N; i++)
+    {
+        if(comparePriority(words[i],words[i-1]) == 1)
+        {
+            continue;
+        }
+        else
+        {
+            printf("%s\n", words[i]);
+        }
+    }
+    freeArray(words);
 }
 
-void make2dArray(char** p, int m, int n)
+char** make2dArray(int m, int n)
 {
-    p = (char**)malloc(sizeof(char*) * m);
+    char** p = (char**)malloc(sizeof(char*) * m);
     for (int i = 0; i < m; i++)
     {
         p[i] = (char*)malloc(sizeof(char) * n);
     }
+    
+    return p;
 }
 int compareLength(char* o, char* c)
 {
@@ -62,4 +82,12 @@ void changeIndex(char* a, char* b)
     temp = a;
     a = b;
     b = temp;
+}
+void freeArray(char** p)
+{
+    for(int i = 0; i < sizeof(p)/sizeof(char*); i++)
+    {
+        free(p[i]);
+    }
+    free(p);
 }
