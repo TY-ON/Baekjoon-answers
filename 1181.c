@@ -1,29 +1,34 @@
 #include<stdio.h>
+#include<stdlib.h>
 #include<string.h>
 #include<stdbool.h>
 
-int insertion(char (*c)[51], int *order, int n, int index);
+int insertion(char **c, int *order, int n, int index);
 int compare_str(char *a, char*b);
 
 int main(){
     int n = 0;
-    char c[20001][51];
-    int len[20001];
-    int order[20001];
 
     scanf("%d", &n);
+    char **c = (char**)malloc(sizeof(char*)*n);
+    int *len = (int*)malloc(sizeof(int)*n);
+    int *order = (int*)malloc(sizeof(int)*n);
 
     for(int i=0;i<n;i++){
+        c[i] = (char*)malloc(sizeof(char)*51);
         scanf("%s", c[i]);
+
         len[i] = strlen(c[i]);
         order[i] = i;
 
         if(insertion(c, order, i+1, i)==-1){
             if(i==0) continue;
+            free(c[i]);
             n--;
             i--;
         }
     }
+    free(len);
 
     for(int i=0;i<n;i++){
         printf("%s\n", c[order[i]]);
@@ -32,7 +37,7 @@ int main(){
     return 0;
 }
 
-int insertion(char (*c)[51], int *order, int n, int index){
+int insertion(char **c, int *order, int n, int index){
     int temp = 0, s = 0, e = index, move = 0;
 
     while(s!=e){
