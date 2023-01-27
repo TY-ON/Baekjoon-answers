@@ -73,7 +73,7 @@ int insertion(char (*c)[51], int *order, int n, int index){
     return 0;
 }
 
-int compare_str(char *a, char*b){
+int compare_str(char *a, char*b){//former is larger, than return -1, same 0, smaller 1
     int alen = strlen(a);
     int blen = strlen(b);
     if(alen<blen) return 1;
