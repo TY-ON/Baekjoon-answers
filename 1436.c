@@ -1,62 +1,62 @@
 #include<stdio.h>
 
+int setup(int left, int right, int repeat);
+int get_jump(int n);
+int square(int a, int n);
+
 int main(){
     int num;
 
     scanf("%d", &num);
 
-    int n = 3;
-    int i = 0, jump = 0;
+    if(num==1){
+        printf("666");
+        return 0;
+    }
+    int r_size = 0, r_plus = 0, repeat = 0;
     int left = 0, right = 0;
+
     while(num>0){
-        jump = get_jump(n);
-        if(left%10==6){
-            jump += square(10, n+1);
-        }
-        if(num>jump){
-            num -= jump;
+        if(left%10==6) r_plus++;
+        if(left%100==66) r_plus++;
+        if(left%1000==666) r_plus++;
+        repeat = square(10, r_size+r_plus);
+
+        if(num>repeat){
+            num -= repeat;
             left++;
+            r_plus = 0;
             continue;
         }
-        n--;
-        left *= 10;
-        i++;
-        /*
-        jump 안되면 더 작은 점프 
-        n--;
-        i=0;
-        6, 66, 666을 확인 가능해야 할듯
-        작은 점프가 안될 때까지 이후 + 남은 num
-        
-        000666 ~ 999666까지 -> 3,439
-        1000666 ~ 1999666 -> 3439개
-        6000666 ~ 6999666 -> 3439 + 10000
-
-        00666 ~ 99666 까지 -> 271개
-
-        600666
-
-        */
+        right = num-1;
+        num -= repeat;
     }
+
+    printf("%d", setup(left, right, repeat));
 
     return 0;
 }
 
 //(((9 + 10)*9 + 100)*9 + 1000)
 
+int setup(int left, int right, int repeat){
+    if(left%1000==666){
+        return left * repeat + right;
+    }
+    if(left%100==66){
+        return (left * 10 + 6) * repeat + right;
+    }
+    if(left%10==6){
+        return (left * 100 + 66) * repeat + right;
+    }
+    return (left * 1000 + 666) * repeat + right;
+}
+
 int get_jump(int n){//19면 9666 -> 20이면 10666;
     int res = 1;
     for(int i=0;i<n;i++){
         res *= 9;
         res += square(10, i+1);
-    }
-    return res;
-}
-
-int square(int a, int n){
-    int res = 1;
-    for(int i=0;i<n;i++){
-        res *= a;
     }
     return res;
 }
