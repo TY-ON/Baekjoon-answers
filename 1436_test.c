@@ -8,9 +8,17 @@ int head;
 
 int main()
 {
-    scanf("%d", &N);
-    countHead();
-    printNumber();
+    for (int i = 1; i < 9000; i++)
+    {
+        //scanf("%d", &N);
+        N = i;
+        printf("%d\t", N);
+        countHead();
+        printf("%d\t%d\t",N, head);
+        printNumber();
+        printf("\n");
+        head = 0;
+    }
 }
 void countHead()
 {
