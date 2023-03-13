@@ -1,9 +1,9 @@
 #include<stdio.h>
 
 void printTestCase();
-int findTopNum(int* queue, int *len);
+int findTopNum(int* queue, int len);
 int printNum(int* queue, int len, int num, int res);
-int printTop(int* queue, int* len, int top, int* res);
+int printTop(int* queue, int len, int top, int* res);
 void copyArr(int *original, int *copy, int len);
 
 int main()
@@ -33,71 +33,61 @@ void printTestCase()
     int res = 0;
     while(index!=-1)
     {
-        index = printTop(input, &n, index, &res);
+        index = printTop(input, n, index, &res);
     }
     printf("%d\n", res);
 }
 
-int findTopNum(int* queue, int* len)
+int findTopNum(int* queue, int len)
 {
     int max = 0;
-    for (int i = 0; i < *len; i++)
+    for (int i = 0; i < len; i++)
     {
         max = max>queue[i]?max:queue[i];
     }
     return max;
 }
 
-int printNum(int* queue, int len, int num, int res)
-{
-    for(int i=0;i<len;i++)
-    {
-        if(queue[i]==num)
-        {
-            res++;
-        }
-    }
-    return res;
-}
-
-int printTop(int* queue, int* len, int index, int* res)
+int printTop(int* queue, int len, int index, int* res)
 {
     int top = findTopNum(queue, len);
 
     if(top==queue[index]){
-        (*res) = printNum(queue, index+1, top, *res);
+        for(int i=0;i<=index;i++)
+        {
+            if(queue[i]==top)
+            {
+                (*res)++;
+            }
+        }
         return -1;
     }
 
     int temp[100] = {0, };
-    int temp_len = 0, temp_index = 0;
 
-    (*res) = printNum(queue, *len, top, *res);
-    for (int i = (*len)-1; i >= 0; i--)
+    int last_top = 0;
+    for (int i = 0; i < len; i++)
     {
-        if((queue[i]==top)||(i==0))
+        if(top == queue[i])
         {
-            if(i==0&&queue[i]!=top)
-            {
-                i--;
-            }
-            for(int j=i+1;(j<(*len))&&(queue[j]!=top);j++)
-            {
-                if(j==index)
-                {
-                    temp_index = temp_len;
-                }
-                temp[temp_len] = queue[j];
-                temp_len++;
-            }
-            continue;
+            last_top = i;
+            queue[i] = 0;
+            (*res)++;
         }
     }
 
-    (*len) = temp_len;
-    copyArr(temp, queue, *len);
+    copyArr(&queue[last_top], temp, len - last_top);
+    copyArr(queue, &temp[len-last_top], last_top);
 
-    return temp_index;
+    copyArr(temp, queue, len);
+
+    index += len-last_top;
+    if(index >= len)
+    {
+        index -= len;
+    }
+
+    return index;
 }
 
 void copyArr(int *original, int *copy, int len)
