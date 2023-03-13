@@ -91,6 +91,3 @@ int pop(QUEUE* q)
     free(node);
     return value;
 }
-
-
-
